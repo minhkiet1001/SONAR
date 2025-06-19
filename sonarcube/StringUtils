@@ -1,0 +1,31 @@
+package com.example;
+
+public class StringUtils {
+    // Intentional code smell: overly complex method
+    public String concatenateStrings(String str1, String str2) {
+        if (str1 == null) {
+            str1 = "";
+        }
+        if (str2 == null) {
+            str2 = "";
+        }
+        String result = "";
+        for (int i = 0; i < str1.length(); i++) {
+            result += str1.charAt(i);
+        }
+        for (int i = 0; i < str2.length(); i++) {
+            result += str2.charAt(i);
+        }
+        return result;
+    }
+
+    // Intentional bug: potential NullPointerException
+    public int getLength(String str) {
+        return str.length(); // No null check
+    }
+
+    // Intentional vulnerability: insecure comparison
+    public boolean isAdmin(String userRole) {
+        return userRole.equals("admin"); // Should use equalsIgnoreCase or additional validation
+    }
+}
