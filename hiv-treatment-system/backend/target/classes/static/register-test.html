@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Registration - HIV Treatment System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+        }
+
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .info-box {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .test-examples {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .test-examples h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .test-examples ul {
+            margin-left: 20px;
+        }
+
+        .test-examples li {
+            margin-bottom: 5px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 HIV Treatment System</h1>
+            <p>Test Registration với Validation & OTP</p>
+        </div>
+
+        <div class="form-container">
+            <!-- Info Box -->
+            <div class="info-box">
+                <h4>📋 Thông tin Test</h4>
+                <p><strong>Email Test:</strong> Các email có chứa từ "test" có thể đăng ký nhiều lần (chỉ dành cho dev)</p>
+                <p><strong>Ngày sinh:</strong> Chỉ được chọn từ 1 năm trước đến hiện tại</p>
+            </div>
+
+            <!-- Test Examples -->
+            <div class="test-examples">
+                <h4>🧪 Email Test Examples</h4>
+                <ul>
+                    <li>test@gmail.com</li>
+                    <li>user.test@example.com</li>
+                    <li>testuser123@domain.com</li>
+                    <li>admin.test@company.vn</li>
+                </ul>
+            </div>
+
+            <!-- Step 1: Send OTP -->
+            <div class="step" id="step1">
+                <h3>Bước 1: Gửi mã OTP</h3>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Nhập email của bạn (thử email có chứa 'test')" required>
+                    <div class="validation-error" id="emailError"></div>
+                </div>
+                <button class="btn" onclick="sendOtp()">Gửi OTP</button>
+                <button class="btn" onclick="fillTestEmail()">Fill Test Email</button>
+                <button class="btn" onclick="fillNormalEmail()">Fill Normal Email</button>
+                <div class="response" id="otpResponse" style="display: none;"></div>
+            </div>
+
+            <!-- Step 2: Registration Form -->
+            <div class="step" id="step2" style="display: none;">
+                <h3>Bước 2: Đăng ký tài khoản</h3>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="fullName">Họ và tên (bắt buộc):</label>
+                        <input type="text" id="fullName" name="name" placeholder="Nhập họ và tên đầy đủ" required>
+                        <div class="validation-error" id="nameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail">Email:</label>
+                        <input type="email" id="regEmail" name="email" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại (bắt đầu bằng 0 hoặc 84):</label>
+                        <input type="tel" id="phone" name="phone" placeholder="0xxxxxxxxx hoặc 84xxxxxxxxx" required>
+                        <div class="validation-error" id="phoneError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Giới tính:</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Chọn giới tính</option>
+                            <option value="MALE">Nam</option>
+                            <option value="FEMALE">Nữ</option>
+                            <option value="OTHER">Khác</option>
+                        </select>
+                        <div class="validation-error" id="genderError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mật khẩu (ít nhất 8 ký tự):</label>
+                        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
+                        <div class="validation-error" id="passwordError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Xác nhận mật khẩu:</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                        <div class="validation-error" id="confirmPasswordError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthdate">Ngày sinh (tùy chọn - từ 1 năm trước đến hiện tại):</label>
+                        <input type="date" id="birthdate" name="birthdate">
+                        <div class="validation-error" id="birthdateError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Địa chỉ (có thể thêm sau):</label>
+                        <input type="text" id="address" name="address" placeholder="Nhập địa chỉ (tùy chọn)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="otp">Mã OTP:</label>
+                        <input type="text" id="otp" name="otp" placeholder="Nhập mã OTP từ email" required>
+                        <div class="validation-error" id="otpError"></div>
+                    </div>
+
+                    <button type="button" class="btn" onclick="validateAndRegister()">Đăng ký</button>
+                    <button type="button" class="btn" onclick="fillTestData()">Fill Test Data</button>
+                    <button type="button" class="btn" onclick="testInvalidBirthdate()">Test Invalid Birthdate</button>
+                </form>
+                <div class="response" id="registerResponse" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePhone(phone) {
+            const cleanPhone = phone.replace(/[\s\-\(\)\+]/g, '');
+            return /^0\d{9}$/.test(cleanPhone) || /^84\d{9}$/.test(cleanPhone);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+
+        function validateName(name) {
+            return name.trim().length >= 2 && name.trim().length <= 100;
+        }
+
+        function validateBirthdate(birthdate) {
+            if (!birthdate) {
+                return true; // Optional field
+            }
+            
+            const selectedDate = new Date(birthdate);
+            const today = new Date();
+            const oneYearAgo = new Date();
+            oneYearAgo.setFullYear(today.getFullYear() - 1);
+            
+            // Reset time to compare only dates
+            today.setHours(23, 59, 59, 999);
+            oneYearAgo.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+            
+            return selectedDate >= oneYearAgo && selectedDate <= today;
+        }
+
+        function isTestEmail(email) {
+            return email.toLowerCase().includes('test');
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.validation-error').forEach(el => el.textContent = '');
+        }
+
+        function showError(fieldId, message) {
+            document.getElementById(fieldId + 'Error').textContent = message;
+        }
+
+        async function sendOtp() {
+            clearErrors();
+            const email = document.getElementById('email').value.trim();
+            
+            if (!email) {
+                showError('email', 'Email không được để trống');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showError('email', 'Email không đúng định dạng');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                const data = await response.json();
+                const responseDiv = document.getElementById('otpResponse');
+                
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    let message = data.message;
+                    if (isTestEmail(email)) {
+                        message += '\n\n🧪 Email test được phép đăng ký nhiều lần (dev mode)';
+                    }
+                    responseDiv.textContent = message;
+                    responseDiv.style.display = 'block';
+                    
+                    // Show step 2 and populate email
+                    document.getElementById('step2').style.display = 'block';
+                    document.getElementById('regEmail').value = email;
+                } else {
+                    responseDiv.className = 'response error';
+                    let errorMessage = data.message;
+                    if (data.message.includes('Email đã được sử dụng') && isTestEmail(email)) {
+                        errorMessage += '\n\n💡 Tip: Email test có thể đăng ký nhiều lần trong dev mode';
+                    }
+                    responseDiv.textContent = errorMessage;
+                    responseDiv.style.display = 'block';
+                }
+            } catch (error) {
+                const responseDiv = document.getElementById('otpResponse');
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Lỗi kết nối: ' + error.message;
+                responseDiv.style.display = 'block';
+            }
+        }
+
+        function validateAndRegister() {
+            console.log('validateAndRegister called');
+            clearErrors();
+            let isValid = true;
+
+            // Validate name
+            const name = document.getElementById('fullName').value.trim();
+            console.log('Name:', name);
+            if (!validateName(name)) {
+                showError('name', 'Họ và tên phải từ 2-100 ký tự');
+                isValid = false;
+            }
+
+            // Validate phone
+            const phone = document.getElementById('phone').value.trim();
+            console.log('Phone:', phone);
+            if (!phone) {
+                showError('phone', 'Số điện thoại không được để trống');
+                isValid = false;
+            } else if (!validatePhone(phone)) {
+                showError('phone', 'Số điện thoại phải bắt đầu bằng 0 hoặc 84 và có đúng định dạng');
+                isValid = false;
+            }
+
+            // Validate gender
+            const gender = document.getElementById('gender').value;
+            console.log('Gender:', gender);
+            if (!gender) {
+                showError('gender', 'Vui lòng chọn giới tính');
+                isValid = false;
+            }
+
+            // Validate password
+            const password = document.getElementById('password').value;
+            console.log('Password length:', password.length);
+            if (!validatePassword(password)) {
+                showError('password', 'Mật khẩu phải có ít nhất 8 ký tự');
+                isValid = false;
+            }
+
+            // Validate confirm password
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                showError('confirmPassword', 'Mật khẩu và xác nhận mật khẩu không khớp');
+                isValid = false;
+            }
+
+            // Validate birthdate
+            const birthdate = document.getElementById('birthdate').value;
+            console.log('Birthdate:', birthdate);
+            if (birthdate && !validateBirthdate(birthdate)) {
+                showError('birthdate', 'Ngày sinh phải từ 1 năm trước đến hiện tại');
+                isValid = false;
+            }
+
+            // Validate OTP
+            const otp = document.getElementById('otp').value.trim();
+            console.log('OTP:', otp);
+            if (!otp) {
+                showError('otp', 'Mã OTP không được để trống');
+                isValid = false;
+            }
+
+            console.log('Validation result:', isValid);
+            if (isValid) {
+                register();
+            }
+        }
+
+        async function register() {
+            console.log('register function called');
+            const formData = {
+                name: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('regEmail').value,
+                phone: document.getElementById('phone').value.trim(),
+                gender: document.getElementById('gender').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                birthdate: document.getElementById('birthdate').value || null,
+                address: document.getElementById('address').value.trim() || null,
+                otp: document.getElementById('otp').value.trim()
+            };
+            
+            console.log('Form data to send:', formData);
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                const responseDiv = document.getElementById('registerResponse');
+                
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    let successMessage = `✅ Đăng ký thành công!\n\nThông tin tài khoản:\n- ID: ${data.id}\n- Tên: ${data.name}\n- Email: ${data.email}\n- Role: ${data.role}\n\nJWT Token: ${data.token}`;
+                    
+                    if (isTestEmail(data.email)) {
+                        successMessage += '\n\n🧪 Email test đã được đăng ký thành công (dev mode)';
+                    }
+                    
+                    responseDiv.textContent = successMessage;
+                } else {
+                    responseDiv.className = 'response error';
+                    let errorMessage = `❌ Đăng ký thất bại!\n\n${data.message}`;
+                    
+                    if (data.message.includes('Email đã được sử dụng') && isTestEmail(formData.email)) {
+                        errorMessage += '\n\n💡 Tip: Email test có thể đăng ký nhiều lần trong dev mode';
+                    }
+                    
+                    responseDiv.textContent = errorMessage;
+                }
+                responseDiv.style.display = 'block';
+            } catch (error) {
+                const responseDiv = document.getElementById('registerResponse');
+                responseDiv.className = 'response error';
+                responseDiv.textContent = 'Lỗi kết nối: ' + error.message;
+                responseDiv.style.display = 'block';
+            }
+        }
+
+        // Helper functions for testing
+        function fillTestEmail() {
+            document.getElementById('email').value = 'test@gmail.com';
+        }
+
+        function fillNormalEmail() {
+            document.getElementById('email').value = 'user@gmail.com';
+        }
+
+        function fillTestData() {
+            document.getElementById('fullName').value = 'Nguyen Van Test';
+            document.getElementById('phone').value = '0123456789';
+            document.getElementById('gender').value = 'MALE';
+            document.getElementById('password').value = 'password123';
+            document.getElementById('confirmPassword').value = 'password123';
+            
+            // Set birthdate to 6 months ago (valid)
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+            document.getElementById('birthdate').value = sixMonthsAgo.toISOString().split('T')[0];
+            
+            document.getElementById('address').value = '123 Test Street, Test City';
+            document.getElementById('otp').value = '123456';
+        }
+
+        function testInvalidBirthdate() {
+            // Set birthdate to future (invalid)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('birthdate').value = tomorrow.toISOString().split('T')[0];
+            
+            // Trigger validation
+            validateAndRegister();
+        }
+
+        // Set date input constraints
+        window.onload = function() {
+            const birthdateInput = document.getElementById('birthdate');
+            const today = new Date();
+            const oneYearAgo = new Date();
+            oneYearAgo.setFullYear(today.getFullYear() - 1);
+            
+            // Set max to today
+            birthdateInput.max = today.toISOString().split('T')[0];
+            // Set min to one year ago
+            birthdateInput.min = oneYearAgo.toISOString().split('T')[0];
+        };
+    </script>
+</body>
+</html> 

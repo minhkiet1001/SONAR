@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Birthdate Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .quick-fill {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .quick-fill button {
+            background-color: #28a745;
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+        .info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Test Birthdate Validation</h1>
+        <p>Test validation cho ngày sinh - không được để trống và không được ở tương lai</p>
+
+        <div class="info">
+            <h3>📋 Validation Rules</h3>
+            <ul>
+                <li><strong>Không được để trống:</strong> Ngày sinh là bắt buộc</li>
+                <li><strong>Không được ở tương lai:</strong> Ngày sinh phải là ngày trong quá khứ hoặc hôm nay</li>
+                <li><strong>Có thể là bất kỳ ngày nào trong quá khứ:</strong> Không giới hạn tuổi tối thiểu</li>
+            </ul>
+        </div>
+
+        <!-- Test Registration with Birthdate -->
+        <div class="test-section">
+            <h2>📝 Test Registration với Birthdate</h2>
+            <div class="quick-fill">
+                <button onclick="fillTestData('valid')">Valid Data (Hôm nay)</button>
+                <button onclick="fillTestData('past')">Valid Data (Quá khứ)</button>
+                <button onclick="fillTestData('future')">Invalid (Tương lai)</button>
+                <button onclick="fillTestData('empty')">Invalid (Trống)</button>
+                <button onclick="fillTestData('old')">Valid (Rất cũ)</button>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Họ và tên:</label>
+                <input type="text" id="name" placeholder="Nguyễn Văn A">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="test@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Số điện thoại:</label>
+                <input type="text" id="phone" placeholder="0123test456">
+            </div>
+
+            <div class="form-group">
+                <label for="birthdate">Ngày sinh:</label>
+                <input type="date" id="birthdate">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Giới tính:</label>
+                <select id="gender">
+                    <option value="">Chọn giới tính</option>
+                    <option value="MALE">Nam</option>
+                    <option value="FEMALE">Nữ</option>
+                    <option value="OTHER">Khác</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" placeholder="password123">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Xác nhận mật khẩu:</label>
+                <input type="password" id="confirmPassword" placeholder="password123">
+            </div>
+
+            <div class="form-group">
+                <label for="otp">OTP:</label>
+                <input type="text" id="otp" placeholder="123456">
+            </div>
+
+            <button onclick="testSendOtp()">1. Test Send OTP</button>
+            <button onclick="testRegister()">2. Test Register</button>
+            <div id="registrationResult" class="result"></div>
+        </div>
+
+        <!-- Test Direct Birthdate Validation -->
+        <div class="test-section">
+            <h2>🔍 Test Direct Birthdate Validation</h2>
+            <p>Test validation trực tiếp với các giá trị khác nhau</p>
+            
+            <div class="quick-fill">
+                <button onclick="testBirthdate('')">Test Empty</button>
+                <button onclick="testBirthdate(getTodayDate())">Test Today</button>
+                <button onclick="testBirthdate(getFutureDate())">Test Future</button>
+                <button onclick="testBirthdate(getPastDate())">Test Past</button>
+                <button onclick="testBirthdate('1990-01-01')">Test 1990</button>
+                <button onclick="testBirthdate('1950-12-25')">Test 1950</button>
+            </div>
+
+            <div class="form-group">
+                <label for="testBirthdate">Test Birthdate:</label>
+                <input type="date" id="testBirthdate">
+            </div>
+
+            <button onclick="testBirthdateValue()">Test Validation</button>
+            <div id="birthdateResult" class="result"></div>
+        </div>
+
+        <!-- Current Date Info -->
+        <div class="test-section">
+            <h2>📊 Date Information</h2>
+            <div id="dateInfo">
+                <p><strong>Hôm nay:</strong> <span id="today"></span></p>
+                <p><strong>Ngày mai:</strong> <span id="tomorrow"></span></p>
+                <p><strong>1 năm trước:</strong> <span id="oneYearAgo"></span></p>
+                <p><strong>10 năm trước:</strong> <span id="tenYearsAgo"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+
+        // Initialize date info
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateInfo();
+        });
+
+        function updateDateInfo() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const oneYearAgo = new Date(today);
+            oneYearAgo.setFullYear(today.getFullYear() - 1);
+            const tenYearsAgo = new Date(today);
+            tenYearsAgo.setFullYear(today.getFullYear() - 10);
+
+            document.getElementById('today').textContent = today.toISOString().split('T')[0];
+            document.getElementById('tomorrow').textContent = tomorrow.toISOString().split('T')[0];
+            document.getElementById('oneYearAgo').textContent = oneYearAgo.toISOString().split('T')[0];
+            document.getElementById('tenYearsAgo').textContent = tenYearsAgo.toISOString().split('T')[0];
+        }
+
+        function getTodayDate() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getFutureDate() {
+            const future = new Date();
+            future.setDate(future.getDate() + 1);
+            return future.toISOString().split('T')[0];
+        }
+
+        function getPastDate() {
+            const past = new Date();
+            past.setFullYear(past.getFullYear() - 1);
+            return past.toISOString().split('T')[0];
+        }
+
+        function fillTestData(type) {
+            // Fill common data
+            document.getElementById('name').value = 'Nguyễn Test';
+            document.getElementById('email').value = 'test@example.com';
+            document.getElementById('phone').value = '0123test456';
+            document.getElementById('gender').value = 'MALE';
+            document.getElementById('password').value = 'password123';
+            document.getElementById('confirmPassword').value = 'password123';
+            document.getElementById('otp').value = '123456';
+
+            // Fill birthdate based on type
+            switch(type) {
+                case 'valid':
+                    document.getElementById('birthdate').value = getTodayDate();
+                    break;
+                case 'past':
+                    document.getElementById('birthdate').value = getPastDate();
+                    break;
+                case 'future':
+                    document.getElementById('birthdate').value = getFutureDate();
+                    break;
+                case 'empty':
+                    document.getElementById('birthdate').value = '';
+                    break;
+                case 'old':
+                    document.getElementById('birthdate').value = '1990-01-01';
+                    break;
+            }
+        }
+
+        function testBirthdate(date) {
+            document.getElementById('testBirthdate').value = date;
+        }
+
+        async function testSendOtp() {
+            const email = document.getElementById('email').value;
+            const resultDiv = document.getElementById('registrationResult');
+            
+            if (!email) {
+                showResult(resultDiv, false, 'Vui lòng nhập email');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/send-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `email=${encodeURIComponent(email)}`
+                });
+
+                const data = await response.json();
+                showResult(resultDiv, response.ok, data.message || data.error, data);
+            } catch (error) {
+                showResult(resultDiv, false, 'Lỗi kết nối: ' + error.message);
+            }
+        }
+
+        async function testRegister() {
+            const resultDiv = document.getElementById('registrationResult');
+            
+            const registerData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                birthdate: document.getElementById('birthdate').value,
+                gender: document.getElementById('gender').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                otp: document.getElementById('otp').value
+            };
+
+            // Validate required fields
+            const missing = [];
+            if (!registerData.name) missing.push('name');
+            if (!registerData.email) missing.push('email');
+            if (!registerData.phone) missing.push('phone');
+            if (!registerData.birthdate) missing.push('birthdate');
+            if (!registerData.gender) missing.push('gender');
+            if (!registerData.password) missing.push('password');
+            if (!registerData.otp) missing.push('otp');
+
+            if (missing.length > 0) {
+                showResult(resultDiv, false, 'Thiếu các trường: ' + missing.join(', '));
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(registerData)
+                });
+
+                const data = await response.json();
+                showResult(resultDiv, response.ok, data.message || data.error || 'Registration completed', data);
+            } catch (error) {
+                showResult(resultDiv, false, 'Lỗi kết nối: ' + error.message);
+            }
+        }
+
+        function testBirthdateValue() {
+            const birthdate = document.getElementById('testBirthdate').value;
+            const resultDiv = document.getElementById('birthdateResult');
+            
+            if (!birthdate) {
+                showResult(resultDiv, false, 'Ngày sinh không được để trống');
+                return;
+            }
+
+            const selectedDate = new Date(birthdate);
+            const today = new Date();
+            
+            if (selectedDate > today) {
+                showResult(resultDiv, false, 'Ngày sinh không được ở tương lai');
+                return;
+            }
+
+            showResult(resultDiv, true, 'Ngày sinh hợp lệ: ' + birthdate);
+        }
+
+        function showResult(element, success, message, data = null) {
+            element.className = `result ${success ? 'success' : 'error'}`;
+            let html = `<strong>${success ? '✅' : '❌'} ${message}</strong>`;
+            
+            if (data && data.errors) {
+                html += '<br><small><strong>Chi tiết lỗi:</strong><br>';
+                for (const [field, error] of Object.entries(data.errors)) {
+                    html += `• ${field}: ${error}<br>`;
+                }
+                html += '</small>';
+            }
+            
+            if (data && data.error) {
+                html += `<br><small>Error Type: ${data.error}</small>`;
+            }
+            
+            element.innerHTML = html;
+        }
+    </script>
+</body>
+</html> 

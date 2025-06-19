@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIV Treatment System - Test Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-link {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+        .test-link:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .test-description {
+            font-size: 14px;
+            color: #666;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.backend {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.frontend {
+            background: #cce5ff;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 HIV Treatment System</h1>
+            <h2>Backend Test Pages</h2>
+            <p>Các trang test cho backend API và validation</p>
+        </div>
+
+        <div class="test-links">
+            <a href="/register-test.html" class="test-link">
+                <div class="test-title">📝 Registration Test</div>
+                <div class="test-description">
+                    <span class="status backend">Backend</span>
+                    Test đầy đủ flow đăng ký: Send OTP → Register với validation
+                </div>
+            </a>
+
+            <a href="/duplicate-test.html" class="test-link">
+                <div class="test-title">🔍 Duplicate Validation Test</div>
+                <div class="test-description">
+                    <span class="status backend">Backend</span>
+                    Test validation email và số điện thoại trùng lặp
+                </div>
+            </a>
+
+            <a href="/birthdate-test.html" class="test-link">
+                <div class="test-title">📅 Birthdate Validation Test</div>
+                <div class="test-description">
+                    <span class="status backend">Backend</span>
+                    Test validation ngày sinh (không trống, không tương lai)
+                </div>
+            </a>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 5px;">
+            <h3>🚀 Frontend Application</h3>
+            <p><strong>URL:</strong> <a href="http://localhost:5174" target="_blank">http://localhost:5174</a></p>
+            <p><strong>Mô tả:</strong> Ứng dụng React chính với đầy đủ tính năng đăng ký, đăng nhập và quản lý</p>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+            <h3>📊 API Information</h3>
+            <p><strong>Base URL:</strong> http://localhost:8080/api</p>
+            <p><strong>Endpoints:</strong></p>
+            <ul>
+                <li><code>POST /auth/send-otp</code> - Gửi OTP</li>
+                <li><code>POST /auth/register</code> - Đăng ký</li>
+                <li><code>POST /auth/login</code> - Đăng nhập</li>
+                <li><code>POST /test/validate-email</code> - Test email validation</li>
+                <li><code>POST /test/validate-phone</code> - Test phone validation</li>
+                <li><code>POST /test/validate-user</code> - Test user validation</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html> 
